@@ -36,7 +36,7 @@ else:
     if "Sheet" in wb.sheetnames:
         wb.remove(wb["Sheet"])  # Hapus sheet default
 
-# Tambahkan sheet utama, Daily, dan Monthly jika belum ada
+# Tambahkan sheet utama, Daily, Weekly, Monthly, dan Billing jika belum ada
 if "Main" not in wb.sheetnames:
     main_ws = wb.create_sheet("Main")
 else:
@@ -47,10 +47,20 @@ if "Daily" not in wb.sheetnames:
 else:
     daily_ws = wb["Daily"]
 
+if "Weekly" not in wb.sheetnames:
+    weekly_ws = wb.create_sheet("Weekly")
+else:
+    weekly_ws = wb["Weekly"]
+
 if "Monthly" not in wb.sheetnames:
     monthly_ws = wb.create_sheet("Monthly")
 else:
     monthly_ws = wb["Monthly"]
+
+if "Billing" not in wb.sheetnames:
+    billing_ws = wb.create_sheet("Billing")
+else:
+    billing_ws = wb["Billing"]
 
 # Fungsi untuk menambahkan tabel ke sheet
 def add_table_to_sheet(ws, table_name, group, start_row):
@@ -74,18 +84,27 @@ def add_table_to_sheet(ws, table_name, group, start_row):
 # Proses setiap tabel berdasarkan jumlah baris
 main_row = 1
 daily_row = 1
+weekly_row = 1
 monthly_row = 1
+billing_row = 1
+
 for table_name, group in df.groupby("TABLE NAME"):
     print(f"Processing table: {table_name} with {len(group)} rows.")  # Debugging info
-    if len(group) > 10:
+    
+    # Cek apakah nama tabel mengandung "bil" atau "billing"
+    if "bil" in table_name.lower() or "billing" in table_name.lower():
+        billing_row = add_table_to_sheet(billing_ws, table_name, group, billing_row)
+    elif len(group) > 10:
         daily_row = add_table_to_sheet(daily_ws, table_name, group, daily_row)
+    elif 1 < len(group) < 6:
+        weekly_row = add_table_to_sheet(weekly_ws, table_name, group, weekly_row)
     elif len(group) == 1:
         monthly_row = add_table_to_sheet(monthly_ws, table_name, group, monthly_row)
     else:
         main_row = add_table_to_sheet(main_ws, table_name, group, main_row)
 
 # Menghapus teks "TABLE NAME: " dari kolom pertama di setiap sheet
-for sheet in [main_ws, daily_ws, monthly_ws]:
+for sheet in [main_ws, daily_ws, weekly_ws, monthly_ws, billing_ws]:
     for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row):
         if row[0].value and "TABLE NAME:" in str(row[0].value):
             row[0].value = row[0].value.replace("TABLE NAME: ", "")
