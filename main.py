@@ -28,7 +28,7 @@ for line in lines:
 df = pd.DataFrame(processed_data, columns=["TABLE NAME", "EVENT DATE", "DATE TRANSACTION", "DATE AVAILABILITY", "NOW SIZE CONDITION"])
 
 # Membuka atau membuat workbook
-output_excel_path = r"C:\Users\dade.firdaus\Documents\KERJA\Projek Python\non_priority_table\hasil\output_multiple_sheets.xlsx"
+output_excel_path = r"C:\Users\ThinkPad\Documents\Dade\Kerja\Python\non_priority_table\hasil\output.xlsx"
 if os.path.exists(output_excel_path):
     wb = load_workbook(output_excel_path)
 else:
@@ -36,7 +36,7 @@ else:
     if "Sheet" in wb.sheetnames:
         wb.remove(wb["Sheet"])  # Hapus sheet default
 
-# Tambahkan sheet utama dan Daily jika belum ada
+# Tambahkan sheet utama, Daily, dan Monthly jika belum ada
 if "Main" not in wb.sheetnames:
     main_ws = wb.create_sheet("Main")
 else:
@@ -46,6 +46,11 @@ if "Daily" not in wb.sheetnames:
     daily_ws = wb.create_sheet("Daily")
 else:
     daily_ws = wb["Daily"]
+
+if "Monthly" not in wb.sheetnames:
+    monthly_ws = wb.create_sheet("Monthly")
+else:
+    monthly_ws = wb["Monthly"]
 
 # Fungsi untuk menambahkan tabel ke sheet
 def add_table_to_sheet(ws, table_name, group, start_row):
@@ -69,15 +74,18 @@ def add_table_to_sheet(ws, table_name, group, start_row):
 # Proses setiap tabel berdasarkan jumlah baris
 main_row = 1
 daily_row = 1
+monthly_row = 1
 for table_name, group in df.groupby("TABLE NAME"):
     print(f"Processing table: {table_name} with {len(group)} rows.")  # Debugging info
     if len(group) > 10:
         daily_row = add_table_to_sheet(daily_ws, table_name, group, daily_row)
+    elif len(group) == 1:
+        monthly_row = add_table_to_sheet(monthly_ws, table_name, group, monthly_row)
     else:
         main_row = add_table_to_sheet(main_ws, table_name, group, main_row)
 
 # Menghapus teks "TABLE NAME: " dari kolom pertama di setiap sheet
-for sheet in [main_ws, daily_ws]:
+for sheet in [main_ws, daily_ws, monthly_ws]:
     for row in sheet.iter_rows(min_row=1, max_row=sheet.max_row):
         if row[0].value and "TABLE NAME:" in str(row[0].value):
             row[0].value = row[0].value.replace("TABLE NAME: ", "")
