@@ -28,7 +28,8 @@ for line in lines:
 df = pd.DataFrame(processed_data, columns=["TABLE NAME", "EVENT DATE", "DATE TRANSACTION", "DATE AVAILABILITY", "NOW SIZE CONDITION"])
 
 # Membuka atau membuat workbook
-output_excel_path = r"C:\Users\dade.firdaus\Documents\KERJA\Projek Python\non_priority_table\hasil\output.xlsx"
+cwd = os.getcwd()
+output_excel_path = cwd+'\output.xlsx' #implement dynamic directory
 if os.path.exists(output_excel_path):
     wb = load_workbook(output_excel_path)
 else:
