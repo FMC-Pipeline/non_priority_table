@@ -28,7 +28,7 @@ for line in lines:
 df = pd.DataFrame(processed_data, columns=["TABLE NAME", "EVENT DATE", "DATE TRANSACTION", "DATE AVAILABILITY", "NOW SIZE CONDITION"])
 
 # Membuka atau membuat workbook
-output_excel_path = r"C:\Users\ThinkPad\Documents\Dade\Kerja\Python\non_priority_table\hasil\output.xlsx"
+output_excel_path = r"C:\Users\dade.firdaus\Documents\KERJA\Projek Python\non_priority_table\hasil\output.xlsx"
 if os.path.exists(output_excel_path):
     wb = load_workbook(output_excel_path)
 else:
@@ -69,7 +69,7 @@ def add_table_to_sheet(ws, table_name, group, start_row):
 
     # Tambahkan header kolom
     start_row += 1
-    ws.append(["TABLE NAME", "EVENT DATE", "DATE TRANSACTION", "DATE AVAILABILITY", "NOW SIZE CONDITION"])
+    ws.append(["TABLE NAME", "DATE TRANSACTION", "DATE AVAILABILITY", "TIME AVAILABILITY", "NOW SIZE CONDITION"])
 
     # Tambahkan data
     start_row += 1
@@ -94,7 +94,7 @@ for table_name, group in df.groupby("TABLE NAME"):
     # Cek apakah nama tabel mengandung "bil" atau "billing"
     if "bil" in table_name.lower() or "billing" in table_name.lower():
         billing_row = add_table_to_sheet(billing_ws, table_name, group, billing_row)
-    elif len(group) > 10:
+    elif len(group) >= 10:
         daily_row = add_table_to_sheet(daily_ws, table_name, group, daily_row)
     elif 1 < len(group) < 6:
         weekly_row = add_table_to_sheet(weekly_ws, table_name, group, weekly_row)
