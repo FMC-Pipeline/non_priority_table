@@ -29,7 +29,7 @@ df = pd.DataFrame(processed_data, columns=["TABLE NAME", "EVENT DATE", "DATE TRA
 
 # Membuka atau membuat workbook
 cwd = os.getcwd()
-output_excel_path = cwd+'\output.xlsx' #implement dynamic directory
+output_excel_path = cwd+'\hasil\output.xlsx' #implement dynamic directory (!IMPORTANT kalo belum ada directory hasil tolong di create dulu sebelum di run, belum di handle)
 if os.path.exists(output_excel_path):
     wb = load_workbook(output_excel_path)
 else:
