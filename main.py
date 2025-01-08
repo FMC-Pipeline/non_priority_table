@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from openpyxl import Workbook, load_workbook
+from colored import format_excel_with_feeds
 
 # Path file yang benar
 file_path = os.path.join(os.path.dirname(__file__), "data.txt")
@@ -112,5 +113,13 @@ for sheet in [main_ws, daily_ws, weekly_ws, monthly_ws, billing_ws]:
 
 # Menyimpan workbook
 wb.save(output_excel_path)
+print(f"Data telah disimpan di {output_excel_path}")
 
-print(f"Data telah disimpan dan diformat di {output_excel_path}")
+# Format file Excel dengan coloured.py
+print("Formatting Excel file with colours...")
+output_colored_path = cwd + '\hasil\colored_output.xlsx'
+format_excel_with_feeds(output_excel_path, output_colored_path)
+
+# Konfirmasi bahwa file berwarna telah disimpan
+print(f"Formatted Excel file saved at {output_colored_path}")
+
